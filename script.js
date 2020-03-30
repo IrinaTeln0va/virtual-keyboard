@@ -18,6 +18,8 @@ let textInput;
 let isCapsOn = false;
 let keyElementsList = [];
 let capslockKey;
+let pressedKeysList = [];
+let keyboardElem;
 
 function renderInitialState () {
     templateElem = document.createElement('DIV');
@@ -33,7 +35,8 @@ function renderInitialState () {
     textInput = templateElem.querySelector('.text-content');
     keyElementsList = templateElem.querySelectorAll('.key');
     capslockKey = templateElem.querySelector('.caps-key');
-    addHandlers(templateElem);
+    keyboardElem = templateElem.querySelector('.keyboard');
+    addHandlers();
     document.body.append(templateElem);
 }
 
@@ -93,11 +96,17 @@ function getSubarrayForRow(lettersSet, rowIndex) {
     return lettersSet.slice(subarrayStartPosition, subarrayEndPosition);
 }
 
-function addHandlers(keyboardElem) {
-    keyboardElem.addEventListener('click', (evt) => {
-        if (!evt.target.classList.contains('key')) {
+function addHandlers() {
+    keyboardElem.addEventListener('mousedown', (evt) => {
+        const targetKey = evt.target;
+
+        if (!targetKey.classList.contains('key')) {
             return;
         }
+
+        pressedKeysList.push(targetKey);
+
+        targetKey.classList.add('active');
 
         let innerText = (evt.target.innerText === '') ? ' ' : evt.target.innerText;
 
@@ -134,15 +143,40 @@ function addHandlers(keyboardElem) {
         textInput.focus();
     });
 
+    keyboardElem.addEventListener('mouseup', mouseUpHandler);
+
+    function mouseUpHandler(evt) {
+        // if (pressedKeysList.length == 1) {
+        //     pressedKeysList[0].classList.remove('active');
+        //     pressedKeysList = [];
+        //     // keyboardElem.removeEventListener('mouseup', mouseUpHandler);
+        // } else {
+            evt.target.classList.remove('active');
+            textInput.focus();
+            // pressedKeysList.splice(pressedKeysList.indexOf(evt.target), 1);
+        // }
+    }
+
     window.addEventListener('keydown', (evt) => {
         evt.preventDefault();
         const targetVirtualKeyIndex = findTargetVirtualKey(evt.key);
-        if (!(targetVirtualKeyIndex < 0)) {
-            const myClick = new Event('click', { bubbles: true, cancelable: false });
-            keyElementsList[targetVirtualKeyIndex].dispatchEvent(myClick);
+        const pressedKeyElement = keyElementsList[targetVirtualKeyIndex];
+        if (!evt.repeat) {
+            if (!(targetVirtualKeyIndex < 0)) {
+                const myMousedown = new Event('mousedown', { bubbles: true, cancelable: false });
+                pressedKeyElement.dispatchEvent(myMousedown);
+            }
+            // window.addEventListener('keyup', keyUpHandler);
         }
-        
     });
+
+    window.addEventListener('keyup', keyUpHandler);
+    function keyUpHandler(evt) {
+        const targetVirtualKeyIndex = findTargetVirtualKey(evt.key);
+        const pressedKeyElement = keyElementsList[targetVirtualKeyIndex];
+        const myMouseup = new Event('mouseup', { bubbles: true, cancelable: false });
+        pressedKeyElement.dispatchEvent(myMouseup);
+    }
 }
 
 function textTyping(innerText) {
@@ -204,7 +238,7 @@ const specialKeysHandlers = {
     },
     capslock() {
         isCapsOn = !isCapsOn;
-        capslockKey.classList.toggle('active');
+        capslockKey.classList.toggle('caps-active');
         keyElementsList.forEach((keyElem, index) => {
             if (isRegularLetter(keyElem.innerText)) {
                 keyElem.innerText = isCapsOn ? keyElem.innerText.toUpperCase() : keyElem.innerText.toLowerCase();

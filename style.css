@@ -64,6 +64,7 @@ a {
   line-height: 40px;
   border-radius: 4px;
   background-color: rgba(255, 255, 255, 0.12);
+  border: 1px solid transparent;
   margin-right: 7px;
   cursor: pointer;
   transition: .3s;
@@ -71,11 +72,12 @@ a {
 }
 
 .key:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.25);
 }
 
-.key:active {
-  background: rgba(0, 0, 0, 0.2);
+.key.active {
+  background-color: transparent;
+  box-shadow: 1px 1px 5px 0px #ffffff85;
 }
 
 .extra-wide-key {
@@ -105,9 +107,14 @@ a {
   opacity: 0.5;
 }
 
-.caps-key.active::before {
+.caps-key.active::before,
+.caps-active::before {
   background-color: #5dd2ff;
   opacity: 1;
+}
+
+.caps-key.active {
+  background-color: rgba(0, 0, 29, 0.7);
 }
 
 
