@@ -264,7 +264,7 @@ function isRegularLetter(innerText) {
 
 const specialKeysHandlers = {
     backspace() {
-        if (textInput.value < 1) {
+        if (textInput.value.length < 1) {
             return;
         }
         if (textInput.selectionStart != textInput.selectionEnd) {
