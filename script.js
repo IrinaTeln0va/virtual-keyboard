@@ -2,12 +2,20 @@ window.onload = function () {
     renderInitialState();
 };
 
-let lang = 'eng';
+const isStorageSupport = true;
+let storageValue;
+try {
+    storageValue = localStorage.getItem('lang');
+} catch {
+    isStorageSupport = false;
+}
+
+let lang = storageValue || 'eng';
 const ROWS_SIZE = [14, 29, 42, 55, 64];
 const MULTI_CONTENT_KEYS = 12;
 const LANG_CHANGING_KEYS = ['Alt', 'Shift'];
 const ALT_GRAPH_PAIR = ['Control', 'AltGraph'];
-const replacedTextKeys = [['Delete', 'Del'], ['CapsLock', 'CapsLk'], ['Control', 'Ctrl'], ['Meta', 'Win'], ['ArrowUp', 'Up'], ['Backspace', 'Back'], ['ArrowDown', 'Down'], ['ArrowLeft', 'Left'], ['ArrowRight', 'Right']];
+const replacedTextKeys = [['Delete', 'Del'], ['CapsLock', 'CapsLk'], ['Control', 'Ctrl'], ['Meta', 'Win'], ['ArrowUp', 'Up'], ['Backspace', 'Back'], ['AltGraph', 'Alt'], ['ArrowDown', 'Down'], ['ArrowLeft', 'Left'], ['ArrowRight', 'Right']];
 const doubledKeysList = ['Alt', 'AltGraph', 'Control', 'Shift']
 
 const lettersList = {
@@ -84,7 +92,14 @@ function getMupkupFromLetter(letter) {
 
 function getReplacingText(letter) {
     const replacedKeysArr = replacedTextKeys.flat();
-    const positionInArray = replacedKeysArr.indexOf(letter);
+    const positionInArray = replacedKeysArr.findIndex((replacedKeyItem, index) => {
+        if (index % 2 != 0) {
+            return;
+        }
+        if (replacedKeyItem == letter) {
+            return true;
+        }
+    });
     if (positionInArray != -1) {
         return replacedKeysArr[positionInArray + 1];
     }
@@ -356,7 +371,12 @@ const specialKeysHandlers = {
         // if (!capslockKey) {
         specialKeysHandlers.onShiftLowercase();
         // }
-        lang = (lang == 'eng') ? 'rus' : 'eng'
+        lang = (lang == 'eng') ? 'rus' : 'eng';
+
+        if (isStorageSupport) {
+            localStorage.setItem('lang', lang);
+        }
+
         keyElementsList.forEach((keyElem, index) => {
             const letter = lettersList[`${lang}Keys`][index];
             if (isMultiContentKey(index)) {
