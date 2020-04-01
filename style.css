@@ -36,7 +36,53 @@ a {
   outline: none;
 }
 
+.tip-message {
+  position: absolute;
+  top: -135px;
+  left: -55px;
+  width: 106px;
+  font-style: italic;
+  color: #02045b;
+  font-size: 14px;
+  padding: 15px;
+  padding-top: 31px;
+  /* padding-left: 24px; */
+  padding-bottom: 35px;
+  background: URL('./assets/img/note.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.key-comb {
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: block;
+  margin-top: 5px;
+  min-width: 70px;
+  font-style: normal;
+  text-align: center;
+  font-weight: 700;
+  padding-top: 5px;
+  border: 1px dashed;
+  min-height: 21px;
+}
+
+/* .tip-message::after {
+  display: block;
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 10px solid #fff;
+    border-bottom-width: 0;
+    border-right-color: transparent;
+    border-left-color: transparent;
+    box-shadow: 2px 4px 9px 0px #00000045;
+} */
+
 .keyboard {
+  position: relative;
   background-image: linear-gradient(255deg, #00305f 80%, #00386f);
   margin: 0 auto;
   width: 950px;
