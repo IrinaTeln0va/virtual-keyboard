@@ -291,7 +291,7 @@ const specialKeysHandlers = {
             deleteSelectedDiapason();
             return;
         }
-        if (textInput.selectionEnd < textInput.value.length) {
+        if (textInput.selectionEnd <= textInput.value.length) {
             const cursorPosition = textInput.selectionStart;
             textInput.value = textInput.value.slice(0, cursorPosition) + textInput.value.slice(cursorPosition + 1);
             textInput.selectionStart = textInput.selectionEnd = cursorPosition;
@@ -299,6 +299,9 @@ const specialKeysHandlers = {
     },
     leftArrow() {
         const cursorPosition = textInput.selectionEnd;
+        if (cursorPosition == 0) {
+            return;
+        }
         textInput.setSelectionRange(cursorPosition - 1, cursorPosition - 1);
     },
     rightArrow() {
