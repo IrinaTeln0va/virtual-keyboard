@@ -4,6 +4,7 @@ window.onload = function onload() {
 
 const isStorageSupport = true;
 let storageValue;
+let timer;
 
 function getLangFromStorage() {
   try {
@@ -18,7 +19,7 @@ getLangFromStorage();
 let lang = storageValue || 'eng';
 const ROWS_SIZE = [14, 29, 42, 55, 64];
 const MULTI_CONTENT_KEYS = 12;
-const LANG_CHANGING_KEYS = ['Alt', 'Shift'];
+const LANG_CHANGING_KEYS = [['Alt', 'Shift'], ['AltGraph', 'Shift']];
 const ALT_GRAPH_PAIR = ['Control', 'AltGraph'];
 const replacedTextKeys = [['Delete', 'Del'], ['CapsLock', 'CapsLk'], ['Control', 'Ctrl'], ['Meta', 'Win'], ['ArrowUp', 'Up'], ['Backspace', 'Back'], ['AltGraph', 'Alt'], ['ArrowDown', 'Down'], ['ArrowLeft', 'Left'], ['ArrowRight', 'Right']];
 const doubledKeysList = ['Alt', 'AltGraph', 'Control', 'Shift'];
@@ -167,11 +168,25 @@ function addHandlers() {
       case 'ArrowRight':
         specialKeysHandlers.rightArrow();
         break;
+    case 'ArrowUp':
+        textTyping('↑');
+        break;
+    case 'ArrowDown':
+        textTyping('↓')
+        break;
       case 'CapsLock':
         specialKeysHandlers.capslock(evt);
         break;
       case 'Shift':
-        specialKeysHandlers.onShiftUppercase(evt);
+          console.log(timer);
+            if (timer) {
+                clearTimeout(timer);
+                console.log('clear ' + timer);
+            }
+          timer = setTimeout(() => {
+              specialKeysHandlers.onShiftUppercase(evt);
+          },200);
+          console.log('новый ' + timer);
         break;
       case 'Alt':
         specialKeysHandlers.onAlt(evt);
@@ -187,6 +202,7 @@ function addHandlers() {
 
   function mouseUpHandler(evt) {
     if (evt.target.innerText == 'Shift') {
+        clearTimeout(timer);
       specialKeysHandlers.onShiftLowercase();
     }
     if (pressedKeysList.length <= 1) {
@@ -253,7 +269,7 @@ function isLangChangingPressed(pressedKeysList) {
   //     return;
   // }
   const pressedCodeList = pressedKeysList.map((key) => key.innerText);
-  return LANG_CHANGING_KEYS.every((key) => pressedCodeList.indexOf(key) != -1);
+    return LANG_CHANGING_KEYS[0].every((key) => pressedCodeList.indexOf(key) != -1) || LANG_CHANGING_KEYS[1].every((key) => pressedCodeList.indexOf(key) != -1);
 }
 
 function textTyping(innerText) {
@@ -378,6 +394,7 @@ const specialKeysHandlers = {
   },
   onLangChange() {
     // if (!capslockKey) {
+    clearTimeout(timer);
     specialKeysHandlers.onShiftLowercase();
     // }
     lang = (lang == 'eng') ? 'rus' : 'eng';
