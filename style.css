@@ -1,0 +1,244 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-size: 25px;
+  font-family: "Lato", "Arial", sans-serif;
+  color: #fff;
+  background-color: #fff;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  font: inherit;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.text-content {
+  display: block;
+  box-sizing: border-box;
+  width: 70vw;
+  margin: 0 auto;
+  margin-bottom: 100px;
+  margin-top: 50px;
+  background-color: #fff;
+  border: none;
+  box-shadow: 2px 3px 11px 0px #02045b61;
+}
+
+.text-content:focus {
+  outline: none;
+}
+
+.tip-message {
+  position: absolute;
+  top: -135px;
+  left: -55px;
+  width: 106px;
+  font-style: italic;
+  color: #02045b;
+  font-size: 14px;
+  padding: 30px;
+  padding-top: 31px;
+  padding-left: 24px;
+  padding-bottom: 58px;
+  background: URL('./assets/img/note.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.key-comb {
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: block;
+  margin-top: 5px;
+  min-width: 70px;
+  font-style: normal;
+  text-align: center;
+  font-weight: 700;
+  padding-top: 5px;
+  border: 1px dashed;
+  min-height: 21px;
+}
+
+.keyboard {
+  position: relative;
+  background-image: linear-gradient(255deg, #00305f 80%, #00386f);
+  margin: 0 auto;
+  width: 950px;
+  padding: 30px;
+  user-select: none;
+}
+
+.row {
+  display: flex;
+  justify-content: center;
+  width: 950px;
+  margin-bottom: 7px;
+}
+
+.key {
+  box-sizing: border-box;
+  padding-right: 15px;
+  padding-left: 15px;
+  display: block;
+  text-align: center;
+  min-width: 50px;
+  height: 40px;
+  color: #fff;
+  font-size: 17px;
+  line-height: 40px;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.12);
+  border: 1px solid transparent;
+  margin-right: 7px;
+  cursor: pointer;
+  transition: .2s;
+  z-index: 1;
+}
+
+.key:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+.key.active {
+  background-color: transparent;
+  box-shadow: 1px 1px 5px 0px #ffffff85;
+  border-radius: 50%;
+}
+
+.extra-wide-key {
+  min-width: 378px;
+}
+
+.caps-key {
+  position: relative;
+  min-width: 125px;
+  background-color: rgba(0, 0, 29, 0.52);
+}
+
+.caps-key:hover {
+  background-color: rgba(0, 0, 29, 0.7);
+}
+
+.caps-key::before {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 4px;
+  height: 4px;
+  display: block;
+  content: '';
+  border-radius: 50%;
+  background-color: #fff;
+  opacity: 0.5;
+}
+
+.caps-key.active::before,
+.caps-active::before {
+  background-color: #5dd2ff;
+  opacity: 1;
+}
+
+.caps-active {
+  background-color: rgba(0, 0, 29, 0.7);
+  box-shadow: 1px 1px 5px 0px #ffffff85;
+}
+
+.caps-key.active {
+  background-color: rgba(0, 0, 29, 0.7);
+}
+
+
+.key:last-child {
+  margin-right: 0;
+}
+
+.hide-text {
+  font-size: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.replacing-text {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  font-size: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.key-wrap {
+  position: relative;
+  box-sizing: border-box;
+  min-width: 65px;
+  margin-right: 7px;
+}
+
+.arrow-key {
+  box-sizing: border-box;
+  font-weight: 300;
+  font-size: 10px;
+  padding-left: 17px;
+  background-color: rgba(255, 255, 255, 0);
+}
+
+.arrow-key:after {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 10px;
+  content: '';
+  width: 14px;
+  height: 14px;
+  background-image: url('./assets/img/left-arrow.svg');
+  background-size: 100%;
+}
+
+.arrow-down:after {
+  left: 9px;
+  transform: rotate(-90deg) translateX(50%);
+}
+
+.arrow-up:after {
+  left: 16px;
+  transform: rotate(90deg) translateX(-50%);
+}
+
+.arrow-left:after {
+  left: 14px;
+}
+
+.arrow-right:after {
+  left: 10px;
+  transform-origin: center;
+  transform: rotate(180deg) translateY(50%);
+}
+
+.os-info {
+  bottom: 5px;
+  left: 5px;
+  color: #ffffff5e;
+  position: absolute;
+  font-weight: 300;
+  width: 1010px;
+  font-size: 12px;
+  padding-left: 32px;
+  background-image: url(./assets/img/windows-logo.svg);
+  background-size: 14px;
+  padding-bottom: 3px;
+  padding-top: 3px;
+  background-repeat: no-repeat;
+  background-position: 10px 3px;
+}
