@@ -67,20 +67,6 @@ a {
   min-height: 21px;
 }
 
-/* .tip-message::after {
-  display: block;
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 10px solid #fff;
-    border-bottom-width: 0;
-    border-right-color: transparent;
-    border-left-color: transparent;
-    box-shadow: 2px 4px 9px 0px #00000045;
-} */
-
 .keyboard {
   position: relative;
   background-image: linear-gradient(255deg, #00305f 80%, #00386f);
@@ -240,3 +226,19 @@ a {
   transform: rotate(180deg) translateY(50%);
 }
 
+.os-info {
+  bottom: 5px;
+  left: 5px;
+  color: #ffffff5e;
+  position: absolute;
+  font-weight: 300;
+  width: 1010px;
+  font-size: 12px;
+  padding-left: 32px;
+  background-image: url(./assets/img/windows-logo.svg);
+  background-size: 14px;
+  padding-bottom: 3px;
+  padding-top: 3px;
+  background-repeat: no-repeat;
+  background-position: 10px 3px;
+}

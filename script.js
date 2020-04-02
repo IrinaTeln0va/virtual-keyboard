@@ -468,6 +468,7 @@ function renderInitialState() {
         <div class="row"></div>
         <div class="row"></div>
         <div class="tip-message">To switch the keyboard to <br>another language press <br><span class="key-comb">Shift+Alt</span></div>
+        <div class="os-info">Created on Windows OS</div>
         </div>`;
 
   fillWithLetters();
