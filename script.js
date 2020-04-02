@@ -364,7 +364,6 @@ function addHandlers() {
         }
         if (letter === pressedKey) {
           orderInPair += 1;
-          return false;
         }
         return orderInPair === 2;
       });
