@@ -321,7 +321,8 @@ function addHandlers() {
   function upTargetKey(key) {
     const keyIndex = pressedKeysList.indexOf(key);
     if (keyIndex === -1) {
-      return;
+      pressedKeysList[pressedKeysList.length - 1].classList.remove('active');
+      pressedKeysList.pop();
     }
     pressedKeysList[keyIndex].classList.remove('active');
     pressedKeysList.splice(keyIndex, 1);
@@ -457,7 +458,7 @@ function addHandlers() {
 
   window.addEventListener('keyup', keyUpHandler);
 
-  window.onblur = resetKeyboardState();
+  window.onblur = resetKeyboardState;
 }
 
 function renderInitialState() {
