@@ -148,7 +148,8 @@ const specialKeysHandlers = {
     }
   },
   tab() {
-    textInput.value += '\t';
+    textTyping('\t')
+    // textInput.value += '\t';
   },
   enter() {
     textInput.value += '\n';
@@ -304,7 +305,7 @@ function addHandlers() {
         }
         timer = setTimeout(() => {
           specialKeysHandlers.onShiftUppercase(evt);
-        }, 200);
+        }, 150);
         break;
       default:
         textInput.focus();
