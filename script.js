@@ -437,7 +437,6 @@ function addHandlers() {
 
   window.addEventListener('keydown', (evt) => {
     evt.preventDefault();
-    // }
     const targetVirtualKeyIndex = findTargetVirtualKey(evt.key, evt.code);
     const pressedKeyElement = keyElementsList[targetVirtualKeyIndex];
     if (!(targetVirtualKeyIndex < 0) && (targetVirtualKeyIndex !== false)) {
@@ -449,7 +448,7 @@ function addHandlers() {
   function keyUpHandler(evt) {
     evt.preventDefault();
     const targetVirtualKeyIndex = findTargetVirtualKey(evt.key, evt.code);
-    if (!targetVirtualKeyIndex) {
+    if (targetVirtualKeyIndex === false) {
       return;
     }
     const pressedKeyElement = keyElementsList[targetVirtualKeyIndex];
