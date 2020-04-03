@@ -155,7 +155,10 @@ const specialKeysHandlers = {
   },
   del() {
     if (textInput.selectionStart !== textInput.selectionEnd) {
+      const cursorPosition = textInput.selectionStart;
       deleteSelectedDiapason();
+      textInput.selectionStart = cursorPosition;
+      textInput.selectionEnd = cursorPosition;
       return;
     }
     if (textInput.selectionEnd <= textInput.value.length) {
