@@ -148,8 +148,7 @@ const specialKeysHandlers = {
     }
   },
   tab() {
-    textTyping('\t')
-    // textInput.value += '\t';
+    textTyping('\t');
   },
   enter() {
     textInput.value += '\n';
