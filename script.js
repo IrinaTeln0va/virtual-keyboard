@@ -148,14 +148,18 @@ const specialKeysHandlers = {
     }
   },
   tab() {
-    textInput.value += '\t';
+    textTyping('\t')
+    // textInput.value += '\t';
   },
   enter() {
     textInput.value += '\n';
   },
   del() {
     if (textInput.selectionStart !== textInput.selectionEnd) {
+      const cursorPosition = textInput.selectionStart;
       deleteSelectedDiapason();
+      textInput.selectionStart = cursorPosition;
+      textInput.selectionEnd = cursorPosition;
       return;
     }
     if (textInput.selectionEnd <= textInput.value.length) {
@@ -301,7 +305,7 @@ function addHandlers() {
         }
         timer = setTimeout(() => {
           specialKeysHandlers.onShiftUppercase(evt);
-        }, 200);
+        }, 150);
         break;
       default:
         textInput.focus();
@@ -318,7 +322,8 @@ function addHandlers() {
   function upTargetKey(key) {
     const keyIndex = pressedKeysList.indexOf(key);
     if (keyIndex === -1) {
-      return;
+      pressedKeysList[pressedKeysList.length - 1].classList.remove('active');
+      pressedKeysList.pop();
     }
     pressedKeysList[keyIndex].classList.remove('active');
     pressedKeysList.splice(keyIndex, 1);
@@ -432,7 +437,6 @@ function addHandlers() {
 
   window.addEventListener('keydown', (evt) => {
     evt.preventDefault();
-    // }
     const targetVirtualKeyIndex = findTargetVirtualKey(evt.key, evt.code);
     const pressedKeyElement = keyElementsList[targetVirtualKeyIndex];
     if (!(targetVirtualKeyIndex < 0) && (targetVirtualKeyIndex !== false)) {
@@ -444,7 +448,7 @@ function addHandlers() {
   function keyUpHandler(evt) {
     evt.preventDefault();
     const targetVirtualKeyIndex = findTargetVirtualKey(evt.key, evt.code);
-    if (!targetVirtualKeyIndex) {
+    if (targetVirtualKeyIndex === false) {
       return;
     }
     const pressedKeyElement = keyElementsList[targetVirtualKeyIndex];
@@ -454,7 +458,7 @@ function addHandlers() {
 
   window.addEventListener('keyup', keyUpHandler);
 
-  window.onblur = resetKeyboardState();
+  window.onblur = resetKeyboardState;
 }
 
 function renderInitialState() {
