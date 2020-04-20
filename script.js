@@ -2,6 +2,11 @@ let isStorageSupport = true;
 let storageValue;
 let timer;
 
+const REGULAR_LETTER_LENGTH = 1;
+const CURSOR_STEP = 1;
+const BEFORE_SHIFT_DELAY = 150;
+const AMOUNT_OF_LETTER_REPEATING = 2;
+
 function getLangFromStorage() {
   try {
     storageValue = localStorage.getItem('lang');
@@ -35,14 +40,12 @@ let keyboardElem;
 function getReplacingText(letter) {
   const replacedKeysArr = replacedTextKeys.flat();
   const positionInArray = replacedKeysArr.findIndex((replacedKeyItem, index) => {
-    if (index % 2 !== 0) {
-      return false;
-    }
     if (replacedKeyItem === letter) {
       return true;
     }
     return false;
   });
+
   if (positionInArray !== -1) {
     return replacedKeysArr[positionInArray + 1];
   }
@@ -65,7 +68,7 @@ function getMupkupFromLetter(letter) {
             <span class="replacing-text arrow-key arrow-${getReplacingText(letter).toLowerCase()}">${getReplacingText(letter)}</span>
             </span>`;
   }
-  if (getReplacingText(letter) !== false) {
+  if (getReplacingText(letter)) {
     return `<span class='key-wrap'>
             <span class="key hide-text">${letter}</span>
             <span class="replacing-text">${getReplacingText(letter)}</span>
@@ -97,7 +100,7 @@ function fillWithLetters() {
 }
 
 function isRegularLetter(innerText) {
-  return innerText.length === 1;
+  return innerText.length === REGULAR_LETTER_LENGTH;
 }
 
 function textTyping(innerText) {
@@ -105,8 +108,8 @@ function textTyping(innerText) {
   const textBeforeCursor = textInput.value.slice(0, cursorPosition);
   const textAfterCursor = textInput.value.slice(textInput.selectionEnd);
   textInput.value = textBeforeCursor + innerText + textAfterCursor;
-  textInput.selectionStart = cursorPosition + 1;
-  textInput.selectionEnd = cursorPosition + 1;
+  textInput.selectionStart = cursorPosition + CURSOR_STEP;
+  textInput.selectionEnd = cursorPosition + CURSOR_STEP;
 }
 
 function isLangChangingPressed(pressedKeysArray) {
@@ -121,10 +124,7 @@ function deleteSelectedDiapason() {
 }
 
 function isMultiContentKey(index) {
-  if (index <= MULTI_CONTENT_KEYS) {
-    return true;
-  }
-  return false;
+  return index <= MULTI_CONTENT_KEYS;
 }
 
 const specialKeysHandlers = {
@@ -132,6 +132,7 @@ const specialKeysHandlers = {
     if (textInput.value.length < 1) {
       return;
     }
+
     if (textInput.selectionStart !== textInput.selectionEnd) {
       const cursorPosition = textInput.selectionStart;
       deleteSelectedDiapason();
@@ -139,12 +140,13 @@ const specialKeysHandlers = {
       textInput.selectionEnd = cursorPosition;
       return;
     }
+
     if (textInput.selectionEnd > 0) {
       const cursorPosition = textInput.selectionStart;
-      textInput.value = textInput.value.slice(0, cursorPosition - 1)
+      textInput.value = textInput.value.slice(0, cursorPosition - CURSOR_STEP)
       + textInput.value.slice(cursorPosition);
-      textInput.selectionStart = cursorPosition - 1;
-      textInput.selectionEnd = cursorPosition - 1;
+      textInput.selectionStart = cursorPosition - CURSOR_STEP;
+      textInput.selectionEnd = cursorPosition - CURSOR_STEP;
     }
   },
   tab() {
@@ -161,10 +163,13 @@ const specialKeysHandlers = {
       textInput.selectionEnd = cursorPosition;
       return;
     }
-    if (textInput.selectionEnd <= textInput.value.length) {
+
+    let isLessThanSelectionEnd = textInput.selectionEnd <= textInput && textInput.value && textInput.value.length;
+
+    if (isLessThanSelectionEnd) {
       const cursorPosition = textInput.selectionStart;
       textInput.value = textInput.value.slice(0, cursorPosition)
-      + textInput.value.slice(cursorPosition + 1);
+      + textInput.value.slice(cursorPosition + CURSOR_STEP);
       textInput.selectionStart = cursorPosition;
       textInput.selectionEnd = cursorPosition;
     }
@@ -174,12 +179,12 @@ const specialKeysHandlers = {
     if (cursorPosition === 0) {
       return;
     }
-    textInput.setSelectionRange(cursorPosition - 1, cursorPosition - 1);
+    textInput.setSelectionRange(cursorPosition - CURSOR_STEP, cursorPosition - CURSOR_STEP);
   },
   rightArrow() {
     const cursorPosition = textInput.selectionStart;
     if (cursorPosition < textInput.value.length) {
-      textInput.setSelectionRange(cursorPosition + 1, cursorPosition + 1);
+      textInput.setSelectionRange(cursorPosition + CURSOR_STEP, cursorPosition + CURSOR_STEP);
     }
   },
   capslock(evt) {
@@ -224,7 +229,7 @@ const specialKeysHandlers = {
   onLangChange() {
     clearTimeout(timer);
     specialKeysHandlers.onShiftLowercase();
-    // }
+
     lang = (lang === 'eng') ? 'rus' : 'eng';
 
     if (isStorageSupport) {
@@ -264,9 +269,12 @@ function addHandlers() {
       textTyping(innerText);
     }
 
-    if (pressedKeysList.length > 1
+    const moreThanOneKeysPressed = pressedKeysList.length > 1;
+    const isRepeatedEvent = evt.detail.repeated;
+
+    if (moreThanOneKeysPressed
       && isLangChangingPressed(pressedKeysList)
-      && !evt.detail.repeated) {
+      && !isRepeatedEvent) {
       specialKeysHandlers.onLangChange();
     }
 
@@ -304,7 +312,7 @@ function addHandlers() {
         }
         timer = setTimeout(() => {
           specialKeysHandlers.onShiftUppercase(evt);
-        }, 150);
+        }, BEFORE_SHIFT_DELAY);
         break;
       default:
         textInput.focus();
@@ -333,11 +341,13 @@ function addHandlers() {
       clearTimeout(timer);
       specialKeysHandlers.onShiftLowercase();
     }
+
     if (pressedKeysList.length <= 1) {
       resetKeyboardState();
       textInput.focus();
       return;
     }
+
     upTargetKey(evt.target);
     textInput.focus();
   }
@@ -347,32 +357,40 @@ function addHandlers() {
       if (index <= MULTI_CONTENT_KEYS) {
         return false;
       }
+
       return letter.toLowerCase() === pressedKey;
     });
+
     return indexInArray;
   }
 
   function findIfDoubledItem(pressedKey, pressedKeyCode) {
     const array = lettersList.engKeys;
+    
     if (doubledKeysList.indexOf(pressedKey) === -1) {
       return false;
     }
+
     if (pressedKeyCode.endsWith('Left')) {
       findIndexInSubarray(lettersList.engKeys, pressedKey);
     }
+
     if (pressedKeyCode.endsWith('Right')) {
       let orderInPair = 0;
       const indexInArray = array.findIndex((letter, index) => {
         if (index <= MULTI_CONTENT_KEYS) {
           return false;
         }
+
         if (letter === pressedKey) {
           orderInPair += 1;
         }
-        return orderInPair === 2;
+
+        return orderInPair === AMOUNT_OF_LETTER_REPEATING;
       });
       return (indexInArray !== -1) ? indexInArray : false;
     }
+
     return false;
   }
 
@@ -389,13 +407,13 @@ function addHandlers() {
   function findIfMultiItem(pressedKey) {
     const multiRusKeysArray = lettersList.rusKeys.slice(0, MULTI_CONTENT_KEYS + 1);
     const indexInRus = getIndexInNestedArr(multiRusKeysArray, pressedKey);
-    if (indexInRus !== false) {
+    if (indexInRus) {
       return indexInRus;
     }
 
     const multiEngKeysArray = lettersList.engKeys.slice(0, MULTI_CONTENT_KEYS + 1);
     const indexInEng = getIndexInNestedArr(multiEngKeysArray, pressedKey);
-    if (indexInEng !== false) {
+    if (indexInEng) {
       return indexInEng;
     }
 

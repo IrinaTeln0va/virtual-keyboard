@@ -24,9 +24,7 @@ a {
   display: block;
   box-sizing: border-box;
   width: 70vw;
-  margin: 0 auto;
-  margin-bottom: 100px;
-  margin-top: 50px;
+  margin: 50px auto 100px auto;
   background-color: #fff;
   border: none;
   box-shadow: 2px 3px 11px 0px #02045b61;
@@ -85,8 +83,7 @@ a {
 
 .key {
   box-sizing: border-box;
-  padding-right: 15px;
-  padding-left: 15px;
+  padding: 0 15px;
   display: block;
   text-align: center;
   min-width: 50px;
@@ -154,7 +151,6 @@ a {
 .caps-key.active {
   background-color: rgba(0, 0, 29, 0.7);
 }
-
 
 .key:last-child {
   margin-right: 0;
@@ -234,11 +230,9 @@ a {
   font-weight: 300;
   width: 1010px;
   font-size: 12px;
-  padding-left: 32px;
+  padding-left: 3px 0 3px 32px;
   background-image: url(./assets/img/windows-logo.svg);
   background-size: 14px;
-  padding-bottom: 3px;
-  padding-top: 3px;
   background-repeat: no-repeat;
   background-position: 10px 3px;
 }
