@@ -38,9 +38,8 @@ let pressedKeysList = [];
 let keyboardElem;
 
 function getReplacingText(letter) {
-  const replacedKeysArr = replacedTextKeys.flat();
-  const positionInArray = replacedKeysArr.findIndex((replacedKeyItem, index) => {
-    if (index % 2 === 0 && replacedKeyItem === letter) {
+  const positionInArray = replacedTextKeys.findIndex(([replacedKeyItem]) => {
+    if (replacedKeyItem === letter) {
       return true;
     }
 
@@ -48,7 +47,10 @@ function getReplacingText(letter) {
   });
 
   if (positionInArray !== -1) {
-    return replacedKeysArr[positionInArray + 1];
+    const replacingPair = replacedTextKeys[positionInArray];
+    const [, replacedLetter] = replacingPair;
+
+    return replacedLetter;
   }
 
   return false;
@@ -56,7 +58,9 @@ function getReplacingText(letter) {
 
 function getMupkupFromLetter(letter) {
   if (typeof letter === 'object') {
-    return `<span class="key">${letter[0]}</span>`;
+    const [capsOffLetter] = letter;
+
+    return `<span class="key">${[capsOffLetter]}</span>`;
   }
 
   if (letter === ' ') {
@@ -260,7 +264,7 @@ const specialKeysHandlers = {
       }
     });
   },
-  
+
   onLangChange() {
     clearTimeout(timer);
     specialKeysHandlers.onShiftLowercase();
@@ -289,7 +293,7 @@ const specialKeysHandlers = {
 
 function addHandlers() {
   keyboardElem.addEventListener('mousedown', (evt) => {
-    const targetKey = evt.target;
+    const { target: targetKey } = evt;
 
     if (!targetKey.classList.contains('key')) {
       return;
@@ -300,7 +304,7 @@ function addHandlers() {
       targetKey.classList.add('active');
     }
 
-    const innerText = (evt.target.innerText === '') ? ' ' : evt.target.innerText;
+    const innerText = (targetKey.innerText === '') ? ' ' : targetKey.innerText;
 
     if (isRegularLetter(innerText)) {
       textTyping(innerText);
@@ -376,8 +380,8 @@ function addHandlers() {
     pressedKeysList.splice(keyIndex, 1);
   }
 
-  function mouseUpHandler(evt) {
-    if (evt.target.innerText === 'Shift') {
+  function mouseUpHandler({ target }) {
+    if (target.innerText === 'Shift') {
       clearTimeout(timer);
       specialKeysHandlers.onShiftLowercase();
     }
@@ -388,7 +392,7 @@ function addHandlers() {
       return;
     }
 
-    upTargetKey(evt.target);
+    upTargetKey(target);
     textInput.focus();
   }
 
@@ -501,7 +505,8 @@ function addHandlers() {
 
   window.addEventListener('keydown', (evt) => {
     evt.preventDefault();
-    const targetVirtualKeyIndex = findTargetVirtualKey(evt.key, evt.code);
+    const { key, code } = evt;
+    const targetVirtualKeyIndex = findTargetVirtualKey(key, code);
     const pressedKeyElement = keyElementsList[targetVirtualKeyIndex];
 
     if (!(targetVirtualKeyIndex < 0) && (targetVirtualKeyIndex !== false)) {
@@ -513,7 +518,8 @@ function addHandlers() {
 
   function keyUpHandler(evt) {
     evt.preventDefault();
-    const targetVirtualKeyIndex = findTargetVirtualKey(evt.key, evt.code);
+    const { key, code } = evt;
+    const targetVirtualKeyIndex = findTargetVirtualKey(key, code);
 
     if (targetVirtualKeyIndex === false) {
       return;

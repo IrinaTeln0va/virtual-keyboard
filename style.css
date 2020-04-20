@@ -230,7 +230,7 @@ a {
   font-weight: 300;
   width: 1010px;
   font-size: 12px;
-  padding-left: 3px 0 3px 32px;
+  padding: 3px 0 3px 32px;
   background-image: url(./assets/img/windows-logo.svg);
   background-size: 14px;
   background-repeat: no-repeat;
