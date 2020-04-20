@@ -40,7 +40,7 @@ let keyboardElem;
 function getReplacingText(letter) {
   const replacedKeysArr = replacedTextKeys.flat();
   const positionInArray = replacedKeysArr.findIndex((replacedKeyItem, index) => {
-    if (replacedKeyItem === letter) {
+    if (index % 2 === 0 && replacedKeyItem === letter) {
       return true;
     }
     return false;
@@ -401,19 +401,19 @@ function addHandlers() {
       const indexInNestedArr = Math.floor(indexInSubarr / 2);
       return indexInNestedArr;
     }
-    return false;
+    return 'isNotFound';
   }
 
   function findIfMultiItem(pressedKey) {
     const multiRusKeysArray = lettersList.rusKeys.slice(0, MULTI_CONTENT_KEYS + 1);
     const indexInRus = getIndexInNestedArr(multiRusKeysArray, pressedKey);
-    if (indexInRus) {
+    if (indexInRus !== 'isNotFound') {
       return indexInRus;
     }
 
     const multiEngKeysArray = lettersList.engKeys.slice(0, MULTI_CONTENT_KEYS + 1);
     const indexInEng = getIndexInNestedArr(multiEngKeysArray, pressedKey);
-    if (indexInEng) {
+    if (indexInEng !== 'isNotFound') {
       return indexInEng;
     }
 
