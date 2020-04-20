@@ -43,12 +43,14 @@ function getReplacingText(letter) {
     if (index % 2 === 0 && replacedKeyItem === letter) {
       return true;
     }
+
     return false;
   });
 
   if (positionInArray !== -1) {
     return replacedKeysArr[positionInArray + 1];
   }
+
   return false;
 }
 
@@ -56,39 +58,48 @@ function getMupkupFromLetter(letter) {
   if (typeof letter === 'object') {
     return `<span class="key">${letter[0]}</span>`;
   }
+
   if (letter === ' ') {
     return `<span class="key extra-wide-key">${letter}</span>`;
   }
+
   if (letter === 'CapsLock') {
     return `<span class="key caps-key">${letter}</span>`;
   }
+
   if (letter.indexOf('Arrow') !== -1) {
     return `<span class='key-wrap'>
             <span class="key hide-text">${letter}</span>
             <span class="replacing-text arrow-key arrow-${getReplacingText(letter).toLowerCase()}">${getReplacingText(letter)}</span>
             </span>`;
   }
+
   if (getReplacingText(letter)) {
     return `<span class='key-wrap'>
             <span class="key hide-text">${letter}</span>
             <span class="replacing-text">${getReplacingText(letter)}</span>
             </span>`;
   }
+
   return `<span class="key">${letter}</span>`;
 }
 
 function addKeysToRow(row, lettersSet) {
   const rowElem = row;
   const rowKeysMurkup = lettersSet.map((letter) => getMupkupFromLetter(letter)).join('');
+
   rowElem.innerHTML = rowKeysMurkup;
 }
 
 function getSubarrayForRow(lettersSet, rowIndex) {
   let subarrayStartPosition = 0;
+
   if (rowIndex > 0) {
     subarrayStartPosition = ROWS_SIZE[rowIndex - 1];
   }
+
   const subarrayEndPosition = ROWS_SIZE[rowIndex];
+
   return lettersSet.slice(subarrayStartPosition, subarrayEndPosition);
 }
 
@@ -107,6 +118,7 @@ function textTyping(innerText) {
   const cursorPosition = textInput.selectionStart;
   const textBeforeCursor = textInput.value.slice(0, cursorPosition);
   const textAfterCursor = textInput.value.slice(textInput.selectionEnd);
+
   textInput.value = textBeforeCursor + innerText + textAfterCursor;
   textInput.selectionStart = cursorPosition + CURSOR_STEP;
   textInput.selectionEnd = cursorPosition + CURSOR_STEP;
@@ -114,6 +126,7 @@ function textTyping(innerText) {
 
 function isLangChangingPressed(pressedKeysArray) {
   const pressedCodeList = pressedKeysArray.map((key) => key.innerText);
+
   return LANG_CHANGING_KEYS[0].every((key) => pressedCodeList.indexOf(key) !== -1)
   || LANG_CHANGING_KEYS[1].every((key) => pressedCodeList.indexOf(key) !== -1);
 }
@@ -135,6 +148,7 @@ const specialKeysHandlers = {
 
     if (textInput.selectionStart !== textInput.selectionEnd) {
       const cursorPosition = textInput.selectionStart;
+
       deleteSelectedDiapason();
       textInput.selectionStart = cursorPosition;
       textInput.selectionEnd = cursorPosition;
@@ -143,89 +157,110 @@ const specialKeysHandlers = {
 
     if (textInput.selectionEnd > 0) {
       const cursorPosition = textInput.selectionStart;
+
       textInput.value = textInput.value.slice(0, cursorPosition - CURSOR_STEP)
       + textInput.value.slice(cursorPosition);
       textInput.selectionStart = cursorPosition - CURSOR_STEP;
       textInput.selectionEnd = cursorPosition - CURSOR_STEP;
     }
   },
+
   tab() {
     textTyping('\t');
   },
+
   enter() {
     textInput.value += '\n';
   },
+
   del() {
     if (textInput.selectionStart !== textInput.selectionEnd) {
       const cursorPosition = textInput.selectionStart;
+
       deleteSelectedDiapason();
       textInput.selectionStart = cursorPosition;
       textInput.selectionEnd = cursorPosition;
       return;
     }
 
-    let isLessThanSelectionEnd = textInput.selectionEnd <= textInput && textInput.value && textInput.value.length;
+    const isLessThanSelectionEnd = textInput.selectionEnd <= textInput && textInput.value && textInput.value.length;
 
     if (isLessThanSelectionEnd) {
       const cursorPosition = textInput.selectionStart;
+
       textInput.value = textInput.value.slice(0, cursorPosition)
       + textInput.value.slice(cursorPosition + CURSOR_STEP);
       textInput.selectionStart = cursorPosition;
       textInput.selectionEnd = cursorPosition;
     }
   },
+
   leftArrow() {
     const cursorPosition = textInput.selectionEnd;
+
     if (cursorPosition === 0) {
       return;
     }
+
     textInput.setSelectionRange(cursorPosition - CURSOR_STEP, cursorPosition - CURSOR_STEP);
   },
+
   rightArrow() {
     const cursorPosition = textInput.selectionStart;
+
     if (cursorPosition < textInput.value.length) {
       textInput.setSelectionRange(cursorPosition + CURSOR_STEP, cursorPosition + CURSOR_STEP);
     }
   },
+
   capslock(evt) {
     if (evt.detail.repeated) {
       return;
     }
+
     isCapsOn = !isCapsOn;
     capslockKey.classList.toggle('caps-active');
     keyElementsList.forEach((elem, index) => {
       const keyElem = elem;
+
       if (isRegularLetter(keyElem.innerText)) {
         keyElem.innerText = isCapsOn
           ? keyElem.innerText.toUpperCase()
           : keyElem.innerText.toLowerCase();
       }
+
       if (isMultiContentKey(index)) {
         keyElem.innerText = isCapsOn ? lettersList[`${lang}Keys`][index][1] : lettersList[`${lang}Keys`][index][0];
       }
     });
   },
+
   onShiftUppercase(evt) {
     if (evt.type === 'mousedown' && !evt.detail.repeated) {
       keyElementsList.forEach((elem) => {
         const keyElem = elem;
+
         if (isRegularLetter(keyElem.innerText)) {
           keyElem.innerText = keyElem.innerText.toUpperCase();
         }
       });
     }
   },
+
   onShiftLowercase() {
     if (isCapsOn) {
       return;
     }
+
     keyElementsList.forEach((elem) => {
       const keyElem = elem;
+
       if (isRegularLetter(keyElem.innerText)) {
         keyElem.innerText = keyElem.innerText.toLowerCase();
       }
     });
   },
+  
   onLangChange() {
     clearTimeout(timer);
     specialKeysHandlers.onShiftLowercase();
@@ -239,10 +274,12 @@ const specialKeysHandlers = {
     keyElementsList.forEach((elem, index) => {
       const keyElem = elem;
       const letter = lettersList[`${lang}Keys`][index];
+
       if (isMultiContentKey(index)) {
         keyElem.innerText = isCapsOn ? letter[1] : letter[0];
         return;
       }
+
       if (isRegularLetter(keyElem.innerText)) {
         keyElem.innerText = isCapsOn ? letter.toUpperCase() : letter.toLowerCase();
       }
@@ -310,6 +347,7 @@ function addHandlers() {
         if (timer) {
           clearTimeout(timer);
         }
+
         timer = setTimeout(() => {
           specialKeysHandlers.onShiftUppercase(evt);
         }, BEFORE_SHIFT_DELAY);
@@ -328,10 +366,12 @@ function addHandlers() {
 
   function upTargetKey(key) {
     const keyIndex = pressedKeysList.indexOf(key);
+
     if (keyIndex === -1) {
       pressedKeysList[pressedKeysList.length - 1].classList.remove('active');
       pressedKeysList.pop();
     }
+
     pressedKeysList[keyIndex].classList.remove('active');
     pressedKeysList.splice(keyIndex, 1);
   }
@@ -366,7 +406,7 @@ function addHandlers() {
 
   function findIfDoubledItem(pressedKey, pressedKeyCode) {
     const array = lettersList.engKeys;
-    
+
     if (doubledKeysList.indexOf(pressedKey) === -1) {
       return false;
     }
@@ -388,6 +428,7 @@ function addHandlers() {
 
         return orderInPair === AMOUNT_OF_LETTER_REPEATING;
       });
+
       return (indexInArray !== -1) ? indexInArray : false;
     }
 
@@ -397,22 +438,27 @@ function addHandlers() {
   function getIndexInNestedArr(nestedArr, pressedKey) {
     const flatArr = nestedArr.flat();
     const indexInSubarr = flatArr.findIndex((letter) => letter === pressedKey);
+
     if (indexInSubarr !== -1) {
       const indexInNestedArr = Math.floor(indexInSubarr / 2);
+
       return indexInNestedArr;
     }
+
     return 'isNotFound';
   }
 
   function findIfMultiItem(pressedKey) {
     const multiRusKeysArray = lettersList.rusKeys.slice(0, MULTI_CONTENT_KEYS + 1);
     const indexInRus = getIndexInNestedArr(multiRusKeysArray, pressedKey);
+
     if (indexInRus !== 'isNotFound') {
       return indexInRus;
     }
 
     const multiEngKeysArray = lettersList.engKeys.slice(0, MULTI_CONTENT_KEYS + 1);
     const indexInEng = getIndexInNestedArr(multiEngKeysArray, pressedKey);
+
     if (indexInEng !== 'isNotFound') {
       return indexInEng;
     }
@@ -431,6 +477,7 @@ function addHandlers() {
     if (indexInEng !== -1) {
       return indexInEng;
     }
+
     return false;
   }
 
@@ -456,8 +503,10 @@ function addHandlers() {
     evt.preventDefault();
     const targetVirtualKeyIndex = findTargetVirtualKey(evt.key, evt.code);
     const pressedKeyElement = keyElementsList[targetVirtualKeyIndex];
+
     if (!(targetVirtualKeyIndex < 0) && (targetVirtualKeyIndex !== false)) {
       const myMousedown = new CustomEvent('mousedown', { detail: { repeated: evt.repeat }, bubbles: true, cancelable: false });
+
       pressedKeyElement.dispatchEvent(myMousedown);
     }
   });
@@ -465,11 +514,14 @@ function addHandlers() {
   function keyUpHandler(evt) {
     evt.preventDefault();
     const targetVirtualKeyIndex = findTargetVirtualKey(evt.key, evt.code);
+
     if (targetVirtualKeyIndex === false) {
       return;
     }
+
     const pressedKeyElement = keyElementsList[targetVirtualKeyIndex];
     const myMouseup = new Event('mouseup', { bubbles: true, cancelable: false });
+
     pressedKeyElement.dispatchEvent(myMouseup);
   }
 

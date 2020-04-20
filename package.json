@@ -4,7 +4,8 @@
   "description": "",
   "main": "script.js",
   "scripts": {
-    "eslint": "eslint **/*.js"
+    "eslint": "eslint **/*.js",
+    "eslint-fix": "eslint **/*.js --fix"
   },
   "repository": {
     "type": "git",
